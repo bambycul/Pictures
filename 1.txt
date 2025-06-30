@@ -1,0 +1,121 @@
+==Установка yay==
+sudo pacman -S --needed git base-devel && git clone https://aur.archlinux.org/yay.git && cd yay && makepkg -si
+
+==Точка восстановления системы==
+Создание:
+1. sudo pacman -S timeshift
+2. sudo timeshift-gtk ->  RSYNC, Next -> выбираем диск и нажимаем Next -> нажимаем Next до конца, а затем Finish -> Create.
+
+Проверка:
+ПКМ -> View Rsync Log for Create.
+
+==Общая папка между ВМ и ПК==
+Нужен сетевой мост!!
+1. Добавляем пустой "оптический привод" если отсутствует
+2. sudo pacman -S virtualbox-guest-utils
+3. sudo usermod -aG vboxsf $USER
+4. sudo systemctl enable vboxservice
+5. sudo reboot
+
+==Клон==
+
+==Удаленный доступ==
+Нужен сетевой мост!!
+1. Настройки на 1 ВМ -> system -> Remote Desktop -> включаем две верхние ✓
+2. в Login details новый пароль.
+3. ip addr
+4. Connections на 2 ВМ.
+5. Нажимаем + и ip 1 ВМ (192.168.1.103:3389) -> Verify.
+
+==SSH==
+Нужен сетевой мост!!
+1. Настройки -> system -> Secure Shell -> нажимаем ✓
+2. ip addr
+3. С основного ПК: ssh login@ip (Пример: user@10.201.83.146) 
+4. Для проверки ls
+
+==Виртуальный принтер==
+1. sudo pacman -Syu cups cups-pdf ghostscript
+2. sudo systemctl enable cups.service
+sudo systemctl start cups.service
+3. Создать папку в home/user
+4. sudo nano /etc/cups/cups-pdf.conf
+5. Находим, меняем и сохраняем файл:
+Out /home/user/название_папки_из_3_пункта
+6. sudo systemctl restart cups.service
+
+http://localhost:631
+Administration -> 
+В списке доступных вариантов выбрать «CUPS-PDF (Virtual PDF Printer)»
+Настроить параметры принтера: задать его имя, выбрать «разрешить совместный доступ к этому принтеру»
+Выбрать «Generic»
+Выбрать драйвер для принтера — «Generic CUPS-PDF Printer (w/options) (en)». Нажать «Добавить принтер»
+Во вкладе принтеры. Настроить параметры печати по умолчанию.
+Чтобы проверить работает ли принтер:
+
+Выбираем «Печать пробной страницы»
+Созданные файлы появятся по пути /home/имя_пользователя/название_папки_из_3_пункта
+
+==Группы пользователей==
+1. Создание пользователя (без прав суперпользователя)
+System -> Users.
+2. Создание группы
+bash
+sudo groupadd название_группы
+3. sudo usermod -aG название_группы имя_пользователя
+4. groups имя_пользователя
+
+==Настройка аутентификации и авторизации==
+1. Заходим на акк второго пользователя
+2. sudo pacman -Syu
+
+==Программы==
+
+==Резервное копирование системы==
+Создание:
+1. Vorta из стора
+2. + -> Create new profile -> название -> save.
+3. Вкладка Repository -> + -> New Repository -> иконка папки -> Create new folder -> Open.
+4. Вкладка Sources -> + -> создаем/добавляем файл/папку в директории user -> Open -> Start Backup.
+
+Проверка:
+Вкладка Archives -> выбираем копию (галочка) и Extract -> создаем папку и Open.
+
+==Отключение композиции рабочего стола==
+Settings -> Accessibility -> Seeing -> Animation Effects (отключаем).
+
+==Отключение масштабирования изображения при высоком разрешении экрана==
+Settings -> Displays -> Resolution (2048x1152) -> Scale - выбираем 100% -> Apply
+
+==Образ системы==
+Нужен сетевой мост и общая папка с ПК!!
+Создание:
+1. sudo pacman -S archiso
+2. cp -r /usr/share/archiso/configs/releng ~/название_директории
+cd ~/название_директории
+sudo mkarchiso -v -w ./work -o ./out ./
+
+==Просмотр настроек ядра==
+1. Проверка версии ос:
+uname -a
+2. Проверка параметров, которые передаются ядру при загрузке системы (Boot параметры):
+cat /proc/cmdline
+3. Просмотр установленных модулей ядра:
+lsmod
+
+Дополнительно можно продемонстрировать настройку swappiness(настройка, указывающая системе, когда начинать 'выгружать' неиспользуемые данные из оперативной памяти на жесткий диск);
+от 0(избегание использования swap раздела) до 100(активное использование swap, даже когда в оперативной памяти нет места), настройка будет временной (до перезагрузки):
+sudo sysctl vm.swappiness=30
+
+==Проверка сетевого соединения==
+Нужен сетевой мост!!
+ip addr
+nmcli device
+
+==Журнал мониторинга==
+1. Проверка активности журнала мониторинга логов:
+systemctl status systemd-journald
+2. Проверка логов текущей загрузки:
+journalctl -b
+3. Проверка логов конкретной службы (например, SSH)
+journalctl -u sshd
