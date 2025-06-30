@@ -45,16 +45,11 @@ Out /home/user/название_папки_из_3_пункта
 6. sudo systemctl restart cups.service
 
 http://localhost:631
-Administration -> 
-В списке доступных вариантов выбрать «CUPS-PDF (Virtual PDF Printer)»
-Настроить параметры принтера: задать его имя, выбрать «разрешить совместный доступ к этому принтеру»
-Выбрать «Generic»
-Выбрать драйвер для принтера — «Generic CUPS-PDF Printer (w/options) (en)». Нажать «Добавить принтер»
-Во вкладе принтеры. Настроить параметры печати по умолчанию.
-Чтобы проверить работает ли принтер:
-
-Выбираем «Печать пробной страницы»
-Созданные файлы появятся по пути /home/имя_пользователя/название_папки_из_3_пункта
+1. Вкладка Administration -> Add Printer
+2. CUPS-PDF (Virtual PDF Printer)
+3. Share this Printer -> Generic
+4. Generic CUPS-PDF Printer (w/options) (en) -> Add printer
+5. Вкладка Printers -> Set as server default (administration), Print test page (maintenance)
 
 ==Группы пользователей==
 1. Создание пользователя (без прав суперпользователя)
